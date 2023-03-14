@@ -7,4 +7,5 @@ void setup() {
 
 void draw() {
     int b;
+    int c;
 }
