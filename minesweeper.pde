@@ -4,3 +4,7 @@ void setup() {
     int c;
     float d:
 }
+
+void draw() {
+    int b;
+}
