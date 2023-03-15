@@ -3,6 +3,7 @@ void setup() {
     float b;
     int c;
     float d:
+    int e;
 }
 
 void draw() {
