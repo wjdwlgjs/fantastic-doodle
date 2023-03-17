@@ -7,6 +7,7 @@ boolean over = false;
 
 float villain_radius;
 float ladybug_radius;
+float villain_normal_speed;
 
 void setup() {
     size(720, 720);
@@ -21,7 +22,7 @@ void draw() {
 }
 
 void initialize() {
-    
+
 }
 
 void draw_countdown() {
@@ -49,7 +50,8 @@ void iterate_villains() {
         villain[i][0][0] += villain[i][1][0]; // villain[i]의 x에 vx를 더함
         villain[i][0][1] += villain[i][1][1]; // villain[i]의 y에 vy를 더함
 
-        if (villain_out_of_screen(i) || villain_dead(i)) {
+        if (villain_out_of_screen(i) || villain_dead(i)) { // 죽거나 화면 밖으로 나간 악당은
+            // 배열에서의 그 자리를 리셋(악당 리스폰)
             reset_villain(i);
         }
     }
@@ -65,24 +67,28 @@ boolean villain_dead(int idx) {
 }
 
 void reset_villain(int idx) {
-    int spawn_at_ceiling = int(random(0.5, 2));
-    int towards_right = int(random(0, 2));
+    int spawn_at_ceilling = int(random(0.9, 2));
 
-    if (spawn_at_ceiling == 1) {
-        villain[idx][0][1] = -random(villain_radius, 20);
+    // 스폰 위치 결정
+    if (spawn_at_ceilling == 1) {
         villain[idx][0][0] = random(-villain_radius, 720 + villain_radius);
-        villain[idx][1][0] = random(-5, 5);
+        villain[idx][0][1] = - random(villain_radius, 20);
     }
     else {
-        villain[idx][0][1] = random(0, 720);
-        if (towards_right == 1) {
-            villain[idx][0][0] = - random(villain_radius, 20);
-            villain[idx][1][0] = random(0.1, 5);
-        }
-        else {
-            villain[idx][0][0] = 720 + random(villain_radius, 20);
-            villain[idx][1][0] = - random(0.1, 5);
-        }
+        villain[idx][0][0] = random(villain_radius, 20);
+        villain[idx][0][0] *= 1 - 2 * int(random(0, 2));
+        villain[idx][0][1] = random(-villain_radius, 720 + villain_radius);
     }
-    villain[idx][1][1] = random(0.1, 5);
+
+    // 속도 벡터가 무당벌레를 향하게
+    villain[idx][1][0] = ladybug[0][0] - villain[idx][0][0];
+    villain[idx][1][1] = ladybug[0][1] - villain[idx][0][1];
+    
+    // 속도 벡터 정규화
+    float speed = sqrt(villain[idx][1][0] * villain[idx][1][0] + villain[idx][1][1] * villain[idx][1][1]);
+    villain[idx][1][0] /= speed;
+    villain[idx][1][1] /= speed;
+
+    villain[idx][1][0] *= villain_normal_speed + randomGaussian() * 0.1;
+    villain[idx][1][1] *= villain_normal_speed + randomGaussian() * 0.1;
 }
