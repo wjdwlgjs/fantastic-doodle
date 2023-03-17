@@ -50,7 +50,7 @@ void render_ladybug(float x, float y, float vx, float vy) {
 
 void iterate_villains() {
     respawned_villain_in_this_frame = false;
-    for (int i = 0; i < villain_count; i++) {
+    for (int i = 0; i < 1000; i++) {
         if (villain_is_active[i]) { // i번째 악당이 활성 상태면
             villain[i][0][0] += villain[i][1][0]; // villain[i]의 x에 vx를 더함
             villain[i][0][1] += villain[i][1][1]; // villain[i]의 y에 vy를 더함
@@ -70,6 +70,8 @@ void iterate_villains() {
 }
 
 boolean villain_out_of_screen(int idx) {
+    // 학당이 화면으로 나갔는지.
+    // 보강 예정
     return (villain[idx][0][1] + villain_radius > 720);
 }
 
@@ -79,6 +81,7 @@ boolean villain_dead(int idx) {
 }
 
 int reset_respawn_countdown() {
+    // 리스폰 속도가 점점 빨라지게
     if (frame_count < 1000) return 3;
     if (frame_count < 2000) return 2;
     if (frame_count < 2500) return 1;
