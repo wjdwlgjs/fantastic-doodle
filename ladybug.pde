@@ -25,7 +25,7 @@ void draw() {
 }
 
 void initialize() {
-    
+
 }
 
 void draw_countdown() {
@@ -55,7 +55,7 @@ void iterate_villains() {
             villain[i][0][0] += villain[i][1][0]; // villain[i]의 x에 vx를 더함
             villain[i][0][1] += villain[i][1][1]; // villain[i]의 y에 vy를 더함
         }
-        if (!villain_is_active[i] || villain_out_of_screen(i) || villain_dead(i)) { // 비활성 악당이거나, 이번 프레임에 죽거나 화면 밖으로 나간 악당은
+        if (!villain_is_active[i] || villain_out_of_screen(i) || villain_dead(i)) { // i번째 악당이 비활성 악당이거나, 이번 프레임에 죽거나 화면 밖으로 나간 악당이면
             // 새 악당 리스폰한 때가 됐으면 이 자리에 할당
             if (frames_to_villain_respawn == 0 && !respawned_villain_in_this_frame) {
                 respawn_villain(i);
@@ -63,6 +63,7 @@ void iterate_villains() {
                 frames_to_villain_respawn = reset_respawn_countdown();
                 villain_is_active[i] = true;
             }
+            // 아니면 비활성 상태로 남겨두어, 다음 프레임에선 위치 변경 등의 작업을 하지 않음
             else villain_is_active[i] = false;
         }
     }
