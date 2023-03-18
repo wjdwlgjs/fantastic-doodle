@@ -1,8 +1,8 @@
 int frame_count = 0;
-float villain[][][] = new float[1000][2][2]; // [100마리의][[x, y], [vx, vy]]
-boolean [] villain_is_active = new boolean[1000];
+float villain[][][] = new float[1000][2][2]; // 빌런 정보 여기다 저장. [100마리의][[x, y], [vx, vy]]
+boolean [] villain_is_active = new boolean[1000]; // 위의 배열에서 n번째 빌런이 활성화된 빌런인지
 float ladybug[][] = new float[2][2]; // [[x, y], [vx, vy]]
-boolean over = false;
+boolean over = false; // 게임 오버
 
 boolean respawned_villain_in_this_frame = false; // 악당 리스폰을 한 프레임당 한 마리 넘게 하진 않을 생각
 int frames_to_villain_respawn = 3; // 악당 리스폰 속도 조절용. 후반으로 가면 한 프레임당 한 마리씩 리스폰하는 걸로
@@ -40,7 +40,7 @@ void draw_gameover() {
 
 }
 
-void render_demon(float x, float y, float vx, float vy) {
+void render_villain(float x, float y, float vx, float vy) {
 
 }
 
