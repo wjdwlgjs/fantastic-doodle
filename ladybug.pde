@@ -1,6 +1,6 @@
 int frame_count = 0;
 float villain[][][] = new float[1000][2][2]; // [100마리의][[x, y], [vx, vy]]
-boolean villain_is_active = new boolean[1000];
+boolean [] villain_is_active = new boolean[1000];
 float ladybug[][] = new float[2][2]; // [[x, y], [vx, vy]]
 boolean over = false;
 
