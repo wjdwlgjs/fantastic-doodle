@@ -7,8 +7,8 @@ boolean over = false; // 게임 오버
 boolean respawned_villain_in_this_frame = false; // 악당 리스폰을 한 프레임당 한 마리 넘게 하진 않을 생각
 int frames_to_villain_respawn = 3; // 악당 리스폰 속도 조절용. 후반으로 가면 한 프레임당 한 마리씩 리스폰하는 걸로
 
-float villain_radius = 50;
-float ladybug_radius = 50;
+float villain_radius = 20;
+float ladybug_radius = 30;
 float villain_normal_speed = 1;
 
 void setup() {
@@ -35,12 +35,13 @@ void initialize() {
 }
 
 void draw_countdown() {
-    // 초반 countdown 및 마우스 위치 초기화
+
 }
 
 void draw_game() {
     iterate_villains();
-    render_ladybug(360, 360);
+    move_ladybug();
+    render_ladybug(ladybug[0][0], ladybug[0][1]);
 }
 
 void draw_gameover() {
@@ -55,6 +56,16 @@ void render_villain(float x, float y) {
 void render_ladybug(float x, float y) {
     fill(255);
     circle(x, y, ladybug_radius*2);
+}
+
+void move_ladybug() {
+    ladybug[0][0] += (mouseX - ladybug[0][0]) * 0.03;
+    ladybug[0][1] += (mouseY - ladybug[0][1]) * 0.03;
+
+    if (ladybug[0][0] < ladybug_radius) ladybug[0][0] = ladybug_radius;
+    if (ladybug[0][1] < ladybug_radius) ladybug[0][1] = ladybug_radius;
+    if (ladybug[0][0] + ladybug_radius > 720) ladybug[0][0] = 720 - ladybug_radius;
+    if (ladybug[0][1] + ladybug_radius > 720) ladybug[0][1] = 720 - ladybug_radius;
 }
 
 void iterate_villains() {
