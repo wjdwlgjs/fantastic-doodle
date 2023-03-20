@@ -19,8 +19,8 @@ void setup() {
 
 void draw() {
     background(128, 255, 128);
-    /* if (frame_count < 150) draw_countdown();
-    else  */if (over) draw_gameover();
+    if (frame_count < 150) draw_countdown();
+    else if (over) draw_gameover();
     else draw_game();
     frame_count += 1;
     if (frames_to_villain_respawn > 0) frames_to_villain_respawn -= 1;
@@ -59,15 +59,13 @@ void draw_gameover() {
 void render_villain(float x, float y, float vx, float vy) {
     float c = villain_radius;
     float angle = atan(vx / vy);
-    float eye_x_r = c * (cos(-angle)- sin(-angle)) / 2;
-    float eye_x_l = c * (- cos(-angle) - sin(-angle)) / 2;
-    float eye_y_r = c * (cos(-angle) + sin(-angle)) / 2;
-    float eye_y_l = c * (cos(-angle) - sin(-angle)) / 2;
+    float _cos = c * cos(-angle) / 2;
+    float _sin = c * sin(-angle) / 2;
     fill(255, 0, 0);
     circle(x, y, villain_radius*2);
     fill(255,255,102);
-    arc(x+eye_x_r, y+eye_y_r, c*2/3, c*2/3, -PI/4 - angle, PI*3/4 - angle);
-    arc(x+eye_x_l, y+eye_y_l, c*2/3, c*2/3, PI/4 - angle, PI*5/4 - angle);
+    arc(x+_cos - _sin, y+_cos + _sin, c*2/3, c*2/3, -PI/4 - angle, PI*3/4 - angle);
+    arc(x-_cos - _sin, y + _cos - _sin, c*2/3, c*2/3, PI/4 - angle, PI*5/4 - angle);
 }
 
 void render_ladybug(float x, float y, float vx, float vy) {
