@@ -9,7 +9,7 @@ int frames_to_villain_respawn = 3; // 악당 리스폰 속도 조절용. 후반�
 
 float villain_radius = 20;
 float ladybug_radius = 30;
-float villain_normal_speed = 1;
+float villain_normal_speed = 2;
 
 void setup() {
     size(720, 720);
@@ -91,8 +91,8 @@ void render_ladybug(float x, float y) {
 }
 
 void move_ladybug() {
-    ladybug[0][0] += (mouseX - ladybug[0][0]) * 0.03;
-    ladybug[0][1] += (mouseY - ladybug[0][1]) * 0.03;
+    ladybug[0][0] += (mouseX - 360) * 0.03;
+    ladybug[0][1] += (mouseY - 360) * 0.03;
 
     if (ladybug[0][0] < ladybug_radius) ladybug[0][0] = ladybug_radius;
     if (ladybug[0][1] < ladybug_radius) ladybug[0][1] = ladybug_radius;
