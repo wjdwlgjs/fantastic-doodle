@@ -35,7 +35,15 @@ void initialize() {
 }
 
 void draw_countdown() {
-
+    // 초반 countdown 및 마우스 위치 초기화
+  for (int i=1; i<6; i++) {
+    if (frame_count < 30 * i && frame_count > 30 * (i-1)) {
+      fill(255,0,0);
+      textSize(180);
+      String count = Integer.toString(6-i);
+      text(count,330,300);
+    }
+  }
 }
 
 void draw_game() {
@@ -49,13 +57,37 @@ void draw_gameover() {
 }
 
 void render_villain(float x, float y) {
-    fill(255, 0, 0);
-    circle(x, y, villain_radius*2);
+  float c = villain_radius;
+  fill(255, 0, 0);
+  circle(x, y, villain_radius*2);
+  fill(255,255,102);
+  arc(x+c/2, y+c/2, c*2/3, c*2/3, -PI/4, PI*3/4);
+  arc(x-c/2, y+c/2, c*2/3, c*2/3, PI/4, PI*5/4);
 }
 
 void render_ladybug(float x, float y) {
-    fill(255);
-    circle(x, y, ladybug_radius*2);
+  float r = ladybug_radius;
+  fill(255,241,215);
+  circle(x, y, ladybug_radius*2);
+  
+  fill(255,249,60);
+  arc(x,y,r*2,r*2,0,PI);
+  line(x-r,y,x+r,y);
+  line(x,y,x,y+r);
+  
+  fill(255);
+  circle(x-(r*2/5),y-(r/2),r*4/5);
+  circle(x+(r*2/5),y-(r/2),r*4/5);
+  
+  fill(0);
+  circle(x-(r*2/5),y-(r*2/3),r/2);
+  circle(x+(r*2/5),y-(r*2/3),r/2);
+  
+  fill(204,153,102);
+  circle(x-(r*2/7),y+(r/2),r*2/5);
+  circle(x+(r*2/7),y+(r/2),r*2/5);
+  circle(x-(r*2/3),y+(r*2/7),r*2/7);
+  circle(x+(r*2/3),y+(r*2/7),r*2/7);
 }
 
 void move_ladybug() {
