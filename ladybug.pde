@@ -7,13 +7,14 @@ boolean over = false; // 게임 오버
 boolean respawned_villain_in_this_frame = false; // 악당 리스폰을 한 프레임당 한 마리 넘게 하진 않을 생각
 int frames_to_villain_respawn = 3; // 악당 리스폰 속도 조절용. 후반으로 가면 한 프레임당 한 마리씩 리스폰하는 걸로
 
-float villain_radius;
-float ladybug_radius;
-float villain_normal_speed;
+float villain_radius = 50;
+float ladybug_radius = 50;
+float villain_normal_speed = 1;
 
 void setup() {
     size(720, 720);
     frameRate(30);
+    initialize();
 }
 
 void draw() {
@@ -22,6 +23,7 @@ void draw() {
     else if (over) draw_gameover();
     else draw_game();
     frame_count += 1;
+    if (frames_to_villain_respawn > 0) frames_to_villain_respawn -= 1;
 }
 
 void initialize() {
@@ -38,7 +40,7 @@ void draw_countdown() {
 
 void draw_game() {
     iterate_villains();
-    render_ladybug();
+    render_ladybug(360, 360);
 }
 
 void draw_gameover() {
@@ -47,12 +49,12 @@ void draw_gameover() {
 
 void render_villain(float x, float y) {
     fill(255, 0, 0);
-    circle(x, y, villain_radius);
+    circle(x, y, villain_radius*2);
 }
 
 void render_ladybug(float x, float y) {
     fill(255);
-    circle(x, y, ladybug_radius);
+    circle(x, y, ladybug_radius*2);
 }
 
 void iterate_villains() {
@@ -62,6 +64,7 @@ void iterate_villains() {
             villain[i][0][0] += villain[i][1][0]; // villain[i]의 x에 vx를 더함
             villain[i][0][1] += villain[i][1][1]; // villain[i]의 y에 vy를 더함
             render_villain(villain[i][0][0], villain[i][0][1]);
+            if (sqrt((ladybug[0][0] - villain[i][0][0]) * (ladybug[0][0] - villain[i][0][0]) + (ladybug[0][1] - villain[i][0][1]) * (ladybug[0][1] - villain[i][0][1])) <= ladybug_radius + villain_radius) over = true;
         }
         if (!villain_is_active[i] || villain_out_of_screen(i) || villain_dead(i)) { // i번째 악당이 비활성 악당이거나, 이번 프레임에 죽거나 화면 밖으로 나간 악당이면
             // 새 악당 리스폰한 때가 됐으면 이 자리에 할당
@@ -97,28 +100,17 @@ int reset_respawn_countdown() {
 }
 
 void respawn_villain(int idx) {
-    int spawn_at_ceilling = int(random(0.9, 2));
+    villain[idx][0][0] = random(-720, 720);
+    villain[idx][0][1] = -villain_radius;
 
-    // 스폰 위치 결정
-    if (spawn_at_ceilling == 1) {
-        villain[idx][0][0] = random(-villain_radius, 720 + villain_radius);
-        villain[idx][0][1] = - random(villain_radius, 20);
-    }
-    else {
-        villain[idx][0][0] = random(villain_radius, 20);
-        villain[idx][0][0] *= 1 - 2 * int(random(0, 2));
-        villain[idx][0][1] = random(-villain_radius, 720 + villain_radius);
-    }
-
-    // 속도 벡터가 무당벌레를 향하게
     villain[idx][1][0] = ladybug[0][0] - villain[idx][0][0];
     villain[idx][1][1] = ladybug[0][1] - villain[idx][0][1];
-    
-    // 속도 벡터 정규화
+
     float speed = sqrt(villain[idx][1][0] * villain[idx][1][0] + villain[idx][1][1] * villain[idx][1][1]);
     villain[idx][1][0] /= speed;
     villain[idx][1][1] /= speed;
 
-    villain[idx][1][0] *= villain_normal_speed + randomGaussian() * 0.1;
-    villain[idx][1][1] *= villain_normal_speed + randomGaussian() * 0.1;
+    villain[idx][1][0] *= villain_normal_speed;
+    villain[idx][1][1] *= villain_normal_speed;
+
 }
