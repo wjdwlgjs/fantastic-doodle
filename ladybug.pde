@@ -19,6 +19,11 @@ float ladybug_radius = 30;
 float villain_normal_speed = 2.5;
 float item_radius = 20;
 
+float smallbomb[][][] = new float [100][2][2];
+float bigbomb[][][] = new float [100][2][2];
+boolean bomb_get = false;
+
+
 void setup() {
     size(720, 720);
     frameRate(30);
@@ -252,4 +257,45 @@ void spawn_item(int type, int idx) { // type 0: 꽃잎 폭탄, type 1: 벌 미�
         missile[idx][1][1] = random(villain_normal_speed, villain_normal_speed * 2);
         floating_items += 1;
     }
+}
+
+void initialize_bomb(int idx){
+  smallbomb [idx][0][0] = random(0,720);
+  smallbomb [idx][0][1] = 0;
+  smallbomb[idx][1][0] = 2;
+  smallbomb[idx][1][1] = 2;
+}
+void render_smallbomb(float x, float y){
+  fill(0,0,255);
+  circle(x,y,30);
+}
+
+void render_bigbomb(float x, float y){
+  fill (0,0,255);
+  circle (x,y,150);
+}
+
+void move_smallbomb(){
+  for (int i = 0; i<100; i++){
+    smallbomb[i][0][0] += smallbomb[i][1][0];
+    smallbomb[i][0][1] += smallbomb[i][1][1];
+    render_smallbomb(smallbomb[i][0][0], smallbomb[i][0][1]);   
+    if (sqrt((smallbomb[i][0][0]-ladybug[0][0])*(smallbomb[i][0][0]-ladybug[0][0]) + (smallbomb[i][0][0]-ladybug[0][0])*(smallbomb[i][0][0]-ladybug[0][0])) >= villain_radius) 
+    {smallbomb[i][0][0] = bigbomb[i][0][0];
+  smallbomb[i][0][1] = bigbomb[i][0][1];}
+  }
+}
+
+void bigbomb(){
+  for(int i = 0; i<100; i++){
+    bigbomb[i][0][1] += bigbomb[i][1][1];
+    render_bigbomb(bigbomb[i][0][0],bigbomb[i][0][1]);
+    
+  }
+}
+
+
+void bomb(){
+ if (bomb_get) move_smallbomb();
+ else bigbomb();
 }
