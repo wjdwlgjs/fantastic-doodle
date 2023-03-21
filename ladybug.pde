@@ -19,9 +19,10 @@ float ladybug_radius = 30;
 float villain_normal_speed = 2.5;
 float item_radius = 20;
 
-float smallbomb[][][] = new float [100][2][2];
-float bigbomb[][][] = new float [100][2][2];
-boolean bomb_get = false;
+float smallbomb[][][] = new float[5][2][2];
+boolean smallbomb_active[] = new boolean[5];
+float bigbomb[][][] = new float[5][2][2];
+int bigbomb_frames_left[] = new int[5];
 
 
 void setup() {
@@ -47,6 +48,8 @@ void initialize() {
     }
     for (int i=0; i<5; i++) {
         missile_state[i] = 0;
+        smallbomb_active[i] = false;
+        bigbomb_frames_left[i] = 0;
     }
 }
 
@@ -68,6 +71,7 @@ void draw_game() {
         time_to_respawn_item = true;
     }
     iterate_missiles();
+    iterate_bombs();
     move_ladybug();
     iterate_villains();
     render_ladybug(ladybug[0][0], ladybug[0][1], ladybug[1][0], ladybug[1][1]);
@@ -160,7 +164,7 @@ void iterate_villains() {
 boolean villain_out_of_screen(int idx) {
     // 학당이 화면으로 나갔는지.
     // 보강 예정
-    return (villain[idx][0][1] + villain_radius > 720);
+    return (villain[idx][0][1] - villain_radius > 720);
 }
 
 boolean villain_dead(int idx) {
@@ -175,6 +179,9 @@ boolean villain_dead(int idx) {
                 return true;
             }
         }
+        if (bigbomb_frames_left[i] != 0 && sqrt((villain[idx][0][0] - bigbomb[i][0][0]) * (villain[idx][0][0] - bigbomb[i][0][0]) + (villain[idx][0][1] - bigbomb[i][0][1]) * (villain[idx][0][1] - bigbomb[i][0][1])) <= item_radius * 5 + villain_radius) {
+            return true;
+        }
     }
     return false;
 }
@@ -188,7 +195,7 @@ int reset_respawn_countdown() {
 }
 
 void respawn_villain(int idx) {
-    villain[idx][0][0] = random(-720, 720);
+    villain[idx][0][0] = random(0, 720);
     villain[idx][0][1] = -villain_radius;
 
     villain[idx][1][0] = ladybug[0][0] - villain[idx][0][0];
@@ -248,54 +255,90 @@ void iterate_missiles() {
     }
 }
 
+void iterate_bombs() {
+    for (int i = 0; i<5; i++) {
+        if (bigbomb_frames_left[i] != 0) {
+            if (bigbomb_frames_left[i] > 40 || (bigbomb_frames_left[i] / 3) % 2 != 0) render_bigbomb(bigbomb[i][0][0], bigbomb[i][0][1]);
+            bigbomb_frames_left[i] -= 1; 
+        }
+        else {
+            if (smallbomb_active[i]) {
+                move_smallbomb(i);
+            }
+            else if (time_to_respawn_item && next_item == 0) {
+                initialize_bomb(i);
+                floating_items += 1;
+                smallbomb_active[i] = true;
+                time_to_respawn_item = false;
+            }
+        }
+    }
+}
+
 void spawn_item(int type, int idx) { // type 0: 꽃잎 폭탄, type 1: 벌 미사일
-    if (type == 1) {
+    if (type == 0) {
+        initialize_bomb(idx);
+        floating_items += 1;
+    }
+    else if (type == 1) {
         missile_state[idx] = 1;
         missile[idx][0][0] = random(item_radius, 720 - item_radius);
         missile[idx][0][1] = - item_radius;
-        missile[idx][1][0] = random(-villain_normal_speed, villain_normal_speed);
-        missile[idx][1][1] = random(villain_normal_speed, villain_normal_speed * 2);
+        missile[idx][1][0] = random(-villain_normal_speed * 0.8, villain_normal_speed * 0.8);
+        missile[idx][1][1] = random(villain_normal_speed * 0.8, villain_normal_speed * 1.5);
         floating_items += 1;
     }
 }
 
 void initialize_bomb(int idx){
-    smallbomb [idx][0][0] = random(0,720);
-    smallbomb [idx][0][1] = 0;
-    smallbomb[idx][1][0] = 2;
-    smallbomb[idx][1][1] = 2;
+    smallbomb[idx][0][0] = random(0,720);
+    smallbomb[idx][0][1] = -item_radius;
+    smallbomb[idx][1][0] = random(-villain_normal_speed * 0.8, villain_normal_speed * 0.8);
+    smallbomb[idx][1][1] = random(villain_normal_speed * 0.8, villain_normal_speed * 1.5);
 }
 void render_smallbomb(float x, float y){
-    fill(0,0,255);
-    circle(x,y,30);
+    fill(128,0,0);
+    circle(x,y,item_radius * 2);
 }
 
 void render_bigbomb(float x, float y){
-    fill (0,0,255);
-    circle (x,y,150);
+    fill(128,0,0);
+    circle(x,y,item_radius * 10);
 }
 
-void move_smallbomb(){
-    for (int i = 0; i<100; i++){
-        smallbomb[i][0][0] += smallbomb[i][1][0];
-        smallbomb[i][0][1] += smallbomb[i][1][1];
-        render_smallbomb(smallbomb[i][0][0], smallbomb[i][0][1]);     
-        if (sqrt((smallbomb[i][0][0]-ladybug[0][0])*(smallbomb[i][0][0]-ladybug[0][0]) + (smallbomb[i][0][0]-ladybug[0][0])*(smallbomb[i][0][0]-ladybug[0][0])) >= villain_radius) 
-        {smallbomb[i][0][0] = bigbomb[i][0][0];
-    smallbomb[i][0][1] = bigbomb[i][0][1];}
+void move_smallbomb(int i){
+    // 벽과 충돌 시 반대로
+    if (smallbomb[i][0][0] < item_radius || smallbomb[i][0][0] > 720 - item_radius) {
+        smallbomb[i][1][0] *= -1;
     }
+    if (smallbomb[i][0][1] < - item_radius || smallbomb[i][0][1] > 720 - item_radius) {
+        smallbomb[i][1][1] *= -1;
+    }
+    smallbomb[i][0][0] += smallbomb[i][1][0];
+    smallbomb[i][0][1] += smallbomb[i][1][1];
+
+    render_smallbomb(smallbomb[i][0][0], smallbomb[i][0][1]);     
+    if (sqrt((smallbomb[i][0][0]-ladybug[0][0])*(smallbomb[i][0][0]-ladybug[0][0]) + (smallbomb[i][0][1]-ladybug[0][1])*(smallbomb[i][0][1]-ladybug[0][1])) <= item_radius + ladybug_radius) {
+        bigbomb[i][0][0] = smallbomb[i][0][0];
+        bigbomb[i][0][1] = smallbomb[i][0][1];
+        bigbomb_frames_left[i] = 180;
+        floating_items -= 1;
+        smallbomb_active[i] = false;
+    }
+    
 }
 
-void bigbomb(){
+/* void bigbomb(){
     for(int i = 0; i<100; i++){
         bigbomb[i][0][1] += bigbomb[i][1][1];
         render_bigbomb(bigbomb[i][0][0],bigbomb[i][0][1]);
         
     }
-}
+} */
 
 
-void bomb(){
+/* void bomb(){
     if (bomb_get) move_smallbomb();
     else bigbomb();
 }
+ */
