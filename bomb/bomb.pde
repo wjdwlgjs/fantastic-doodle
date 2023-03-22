@@ -363,8 +363,52 @@ void render_smallbomb(float x, float y){
 }
 
 void render_bigbomb(float x, float y){
-    fill(128,0,0);
-    circle(x,y,item_radius * 10);
+  float r = item_radius*4;
+  float l = item_radius*4;
+  fill(128,0,0);
+  ellipse(x-l, y, 2*l, r);
+  ellipse(x+l, y, 2*l, r);
+  ellipse(x, y-l, r, 2*l);
+  ellipse(x, y+l, r, 2*l);
+  
+  translate(x+l/sqrt(2), y-l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x+l/sqrt(2)), -(y-l/sqrt(2)));
+  ellipse(x+l/sqrt(2), y-l/sqrt(2), 2*l, r);
+  
+  translate(x+l/sqrt(2), y-l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x+l/sqrt(2)), -(y-l/sqrt(2)));
+  
+  translate(x-l/sqrt(2), y-l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x-l/sqrt(2)), -(y-l/sqrt(2)));
+  ellipse(x-l/sqrt(2), y-l/sqrt(2), 2*l, r);
+  
+  translate(x-l/sqrt(2), y-l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x-l/sqrt(2)), -(y-l/sqrt(2)));
+  
+  translate(x-l/sqrt(2), y+l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x-l/sqrt(2)), -(y+l/sqrt(2)));
+  ellipse(x-l/sqrt(2), y+l/sqrt(2), 2*l, r);
+  
+  translate(x-l/sqrt(2), y+l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x-l/sqrt(2)), -(y+l/sqrt(2)));
+  
+  translate(x+l/sqrt(2), y+l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x+l/sqrt(2)), -(y+l/sqrt(2)));
+  ellipse(x+l/sqrt(2), y+l/sqrt(2), 2*l, r);
+  
+  translate(x+l/sqrt(2), y+l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x+l/sqrt(2)), -(y+l/sqrt(2)));
+  
+  fill(255,249,60);
+  circle(x,y,r);
 }
 
 void move_smallbomb(int i){
