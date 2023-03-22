@@ -33,8 +33,8 @@ void setup() {
 
 void draw() {
     background(128, 255, 128);
-    /* if (frame_count < 150) draw_countdown();
-    else */ if (over) draw_gameover();
+    if (frame_count < 150) draw_countdown();
+    else if (over) draw_gameover();
     else draw_game();
     frame_count += 1;
     if (frames_to_villain_respawn > 0) frames_to_villain_respawn -= 1;
@@ -60,7 +60,7 @@ void draw_countdown() {
             fill(255,0,0);
             textSize(180);
             String count = Integer.toString(6-i);
-            text(count,330,300);
+            text(count,320,360);
         }
     }
 }
@@ -78,7 +78,10 @@ void draw_game() {
 }
 
 void draw_gameover() {
-
+  fill(255,0,0);
+  textSize(90);
+  text("Game Over", 150,360);
+  fill(255);
 }
 
 void render_villain(float x, float y, float vx, float vy) {
@@ -237,6 +240,7 @@ void iterate_missiles() {
             else {
                 fill(255, 249, 60);
                 circle(missile[i][0][0], missile[i][0][1], item_radius * 2);
+                render_missile(missile[i][0][0], missile[i][0][1]+item_radius/4, item_radius/4);
             }
         }
         else if (missile_state[i] == 2) {
@@ -247,12 +251,25 @@ void iterate_missiles() {
 
             else {
                 missile[i][0][1] -= 1.2;
-                fill(255, 249, 60);
-                circle(missile[i][0][0], missile[i][0][1], item_radius * 5);
-                circle(missile[i][0][0], missile[i][0][1] - item_radius * 4, item_radius * 3);
+                render_missile(missile[i][0][0], missile[i][0][1], item_radius);
             }
         }
     }
+}
+
+void render_missile(float x, float y, float r) {
+    fill(255,249,60);
+    circle(x,y,r*5); //body
+    circle(x,y-r*4,r*3); //face
+    fill(255);
+    circle(x-r*3/4, y-r*19/4, r*4/3);
+    circle(x+r*3/4, y-r*19/4, r*4/3);
+    fill(0);
+    circle(x-r*3/4, y-r*99/20, r*4/5);
+    circle(x+r*3/4, y-r*99/20, r*4/5); //eyes
+    quad(x-r*5*sqrt(3)/4,y-r*5/4, x+r*5*sqrt(3)/4,y-r*5/4, x+r*5/4,y-r*5*sqrt(3)/4, x-r*5/4,y-r*5*sqrt(3)/4);
+    quad(x-r*5*sqrt(3)/4,y+r*5/4, x+r*5*sqrt(3)/4,y+r*5/4, x+r*5/4,y+r*5*sqrt(3)/4, x-r*5/4,y+r*5*sqrt(3)/4);
+    quad(x-r*5/2,y+r*1/2, x+r*5/2,y+r*1/2, x+r*5/2,y-r*1/2, x-r*5/2,y-r*1/2);
 }
 
 void iterate_bombs() {
