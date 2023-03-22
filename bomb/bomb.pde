@@ -270,17 +270,6 @@ void render_missile(float x, float y, float r) {
   quad(x-r*5*sqrt(3)/4,y-r*5/4, x+r*5*sqrt(3)/4,y-r*5/4, x+r*5/4,y-r*5*sqrt(3)/4, x-r*5/4,y-r*5*sqrt(3)/4);
   quad(x-r*5*sqrt(3)/4,y+r*5/4, x+r*5*sqrt(3)/4,y+r*5/4, x+r*5/4,y+r*5*sqrt(3)/4, x-r*5/4,y+r*5*sqrt(3)/4);
   quad(x-r*5/2,y+r*1/2, x+r*5/2,y+r*1/2, x+r*5/2,y-r*1/2, x-r*5/2,y-r*1/2);
-  fill(0,255,255);
-  translate(x+r*5/4, y-r*5/4);
-  rotate(PI/4);
-  translate(-(x+r*5/4), -(y-r*5/4));
-  ellipse(x+r*5/4, y-r*5/4, r*5/sqrt(2), r*4/3);
-
-  rotate(-PI/4);
-  translate(x-r*5/4, y-r*5/4);
-  rotate(-PI/4);
-  translate(-(x-r*5/4), -(y-r*5/4));
-  ellipse(x-r*5/4, y-r*5/4, r*5/sqrt(2), r*4/3);
 }
 
 void iterate_bombs() {
@@ -325,8 +314,52 @@ void initialize_bomb(int idx){
     smallbomb[idx][1][1] = random(villain_normal_speed * 0.8, villain_normal_speed * 1.5);
 }
 void render_smallbomb(float x, float y){
-    fill(128,0,0);
-    circle(x,y,item_radius * 2);
+  float r = item_radius;
+  float l = item_radius;
+  fill(128,0,0);
+  ellipse(x-l, y, 2*l, r);
+  ellipse(x+l, y, 2*l, r);
+  ellipse(x, y-l, r, 2*l);
+  ellipse(x, y+l, r, 2*l);
+  
+  translate(x+l/sqrt(2), y-l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x+l/sqrt(2)), -(y-l/sqrt(2)));
+  ellipse(x+l/sqrt(2), y-l/sqrt(2), 2*l, r);
+  
+  translate(x+l/sqrt(2), y-l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x+l/sqrt(2)), -(y-l/sqrt(2)));
+  
+  translate(x-l/sqrt(2), y-l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x-l/sqrt(2)), -(y-l/sqrt(2)));
+  ellipse(x-l/sqrt(2), y-l/sqrt(2), 2*l, r);
+  
+  translate(x-l/sqrt(2), y-l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x-l/sqrt(2)), -(y-l/sqrt(2)));
+  
+  translate(x-l/sqrt(2), y+l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x-l/sqrt(2)), -(y+l/sqrt(2)));
+  ellipse(x-l/sqrt(2), y+l/sqrt(2), 2*l, r);
+  
+  translate(x-l/sqrt(2), y+l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x-l/sqrt(2)), -(y+l/sqrt(2)));
+  
+  translate(x+l/sqrt(2), y+l/sqrt(2));
+  rotate(PI/4);
+  translate(-(x+l/sqrt(2)), -(y+l/sqrt(2)));
+  ellipse(x+l/sqrt(2), y+l/sqrt(2), 2*l, r);
+  
+  translate(x+l/sqrt(2), y+l/sqrt(2));
+  rotate(-PI/4);
+  translate(-(x+l/sqrt(2)), -(y+l/sqrt(2)));
+  
+  fill(255,249,60);
+  circle(x,y,r);
 }
 
 void render_bigbomb(float x, float y){
